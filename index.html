@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,8 +14,8 @@
             --text-muted: #888888;
             --accent: #1a73e8;
             --border: #eeeeee;
-            --card-shadow: rgba(0,0,0,0.06);
-            --card-hover-shadow: rgba(0,0,0,0.12);
+            --card-shadow: rgba(0, 0, 0, 0.06);
+            --card-hover-shadow: rgba(0, 0, 0, 0.12);
             --header-hover: #f8f9fa;
             --stat-bg: #ffffff;
             --spinner-track: #dddddd;
@@ -29,8 +30,8 @@
                 --text-muted: #888888;
                 --accent: #64b5f6;
                 --border: #2a2a4a;
-                --card-shadow: rgba(0,0,0,0.3);
-                --card-hover-shadow: rgba(0,0,0,0.5);
+                --card-shadow: rgba(0, 0, 0, 0.3);
+                --card-hover-shadow: rgba(0, 0, 0, 0.5);
                 --header-hover: #1e2a4a;
                 --stat-bg: #16213e;
                 --spinner-track: #444444;
@@ -187,7 +188,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .empty {
@@ -229,6 +232,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -258,8 +262,11 @@
         }
 
         function linkify(text) {
-            const urlPattern = /(https?:\/\/[^\s)]+)/g;
-            return text.replace(urlPattern, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+            // 先處理 Markdown 格式 [text](url)
+            text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+            // 再處理剩餘的純 URL
+            text = text.replace(/(^|[^"'])(https?:\/\/[^\s)<]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+            return text;
         }
 
         async function loadReports() {
@@ -343,4 +350,5 @@
         loadReports();
     </script>
 </body>
+
 </html>
