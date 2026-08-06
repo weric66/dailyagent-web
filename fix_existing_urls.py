@@ -41,16 +41,19 @@ def decode_google_news_url(google_url):
         return None
 
 
-def shorten_with_tinyurl(long_url, timeout=15):
-    """透過 TinyURL 將長網址轉短網址。"""
+def shorten_url(long_url, timeout=15):
+    """透過 ulvis.net 將長網址轉短網址（直接跳轉，無預覽頁）。"""
     try:
-        api_url = f"https://tinyurl.com/api-create.php?url={long_url}"
+        api_url = f"https://ulvis.net/API/write/get?url={long_url}"
         res = requests.get(api_url, timeout=timeout)
-        if res.status_code == 200 and res.text.startswith("https://"):
-            return res.text.strip()
+        if res.status_code == 200:
+            import json as _json
+            data = _json.loads(res.text)
+            if data.get("success") and data.get("data", {}).get("url"):
+                return data["data"]["url"]
         return None
     except Exception as e:
-        print(f"    TinyURL 失敗: {e}")
+        print(f"    短網址轉換失敗: {e}")
         return None
 
 
@@ -65,9 +68,9 @@ def process_url(google_url):
 
     print(f"    原始: {real_url[:80]}...")
 
-    short_url = shorten_with_tinyurl(real_url)
+    short_url = shorten_url(real_url)
     if not short_url:
-        print(f"    ⚠️ TinyURL 失敗，使用原始連結")
+        print(f"    ⚠️ 短網址轉換失敗，使用原始連結")
         return real_url
 
     print(f"    短網址: {short_url}")
